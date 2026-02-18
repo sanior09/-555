@@ -10,6 +10,70 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://www.okusanpix.com/wp-content/uploads/2019/10/d9966c0891abb64cef0ae786b0b0e529.png" type="image/png">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        /* เปลี่ยนฟอนต์ Header */
+        .header-content {
+            font-family: 'Charm', cursive;
+        }
+
+        /* ปรับขนาดตัวหนังสือ Header ให้ใหญ่ขึ้น */
+        .header-content h1 {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+        .header-content p {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* ตกแต่งปุ่มการเดินทาง (Header Button) ให้สวยงาม */
+        .btn-travel {
+            display: inline-block;
+            padding: 12px 32px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, #FF512F, #DD2476); /* สีโทนร้อนส้ม-ชมพู ธีมภูเขาไฟ */
+            color: white !important;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 8px 15px rgba(221, 36, 118, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-travel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(221, 36, 118, 0.4);
+            background: white;
+            color: #DD2476 !important;
+            border-color: #DD2476;
+        }
+
+        .btn-travel:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(221, 36, 118, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 3rem;
+            }
+            .header-content p {
+                font-size: 1.5rem;
+            }
+            .btn-travel {
+                padding: 10px 24px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -19,7 +83,11 @@
     </div>
 
     <header>
-        <div class="header-content"></div>
+        <div class="header-content">
+            <h1>เมืองบุรีรัมย์</h1>
+            <p>เมืองปราสาทหิน ถิ่นภูเขาไฟ</p>
+            <a href="#transportation" class="btn-travel">วิธีการเดินทาง</a>
+        </div>
     </header>
 
     <nav id="navbar">
@@ -455,5 +523,47 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // ทำให้การเลื่อน (Smooth Scroll) นุ่มนวลและปรับความเร็วได้ สำหรับลิงก์นำทางหลัก
+        const scrollLinks = document.querySelectorAll('.btn-travel, .nav-links a');
+
+        scrollLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                const duration = 1200; // ปรับเวลาเพื่อความนุ่มนวล (1.2 วินาที)
+                const navbarHeight = document.getElementById('navbar')?.offsetHeight || 80;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                let startTime = null;
+
+                function scrollAnimation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(scrollAnimation);
+                    }
+                }
+
+                // Easing function เพื่อให้การเลื่อนดูเป็นธรรมชาติ (เริ่มช้า-เร็ว-จบช้า)
+                function easeInOutQuad(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(scrollAnimation);
+            }
+            });
+        });
+    </script>
 </body>
 </html>
